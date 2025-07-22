@@ -1,4 +1,1 @@
-Flask
-APScheduler
 requests
-python-dotenv
