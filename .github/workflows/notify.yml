@@ -1,0 +1,28 @@
+name: Narou Update Notification
+
+on:
+  schedule:
+    - cron: '30 19 * * *'  # 毎日19:30に実行
+  workflow_dispatch:        # 手動実行も可能！
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Pythonをセットアップ
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: スクリプトを実行
+        env:
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          TO_ADDR: ${{ secrets.TO_ADDR }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+        run: python notifier.py
