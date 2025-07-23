@@ -1,28 +1,40 @@
-name: Narou Update Notification
+name: 小説家になろう更新通知BOT
 
 on:
   schedule:
     - cron: '30 19 * * *'  # 毎日19:30に実行
-  workflow_dispatch:        # 手動実行も可能！
+  workflow_dispatch:         # 手動実行もOK！
+  
+permissions:
+  contents: write
 
 jobs:
-  notify:
+  check-updates:
     runs-on: ubuntu-latest
+
     steps:
-      - name: リポジトリをチェックアウト
+      - name: リポジトリをクローン
         uses: actions/checkout@v3
 
       - name: Pythonをセットアップ
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.11'
 
-      - name: ライブラリをインストール
+      - name: 依存ライブラリをインストール
         run: pip install -r requirements.txt
 
-      - name: スクリプトを実行
+      - name: 通知スクリプトを実行
         env:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           TO_ADDR: ${{ secrets.TO_ADDR }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         run: python notifier.py
+
+      - name: 更新されたら保存＆コミット
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add last_updates.json  
+          git commit -m "Update last checked timestamps" || echo "No changes to commit"
+          git push
