@@ -2,7 +2,7 @@ name: 小説家になろう更新通知BOT
 
 on:
   schedule:
-    - cron: '30 19 * * *'  # 毎日19:30に実行
+    - cron: '49 11 * * *'  # 毎日19:30に実行
   workflow_dispatch:         # 手動実行もOK！
   
 permissions:
